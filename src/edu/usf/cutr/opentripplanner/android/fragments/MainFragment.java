@@ -165,6 +165,7 @@ import edu.usf.cutr.opentripplanner.android.util.RightDrawableOnTouchListener;
  */
 
 public class MainFragment extends Fragment implements
+		ServerSelectorCompleteListener,
 		TripRequestCompleteListener, MetadataRequestCompleteListener,
 		OTPGeocodingListener, LocationListener,
 		DateCompleteListener, OnRangeSeekBarChangeListener<Double>,
@@ -2960,4 +2961,7 @@ public class MainFragment extends Fragment implements
 		Log.v(TAG, bikeParam);
 	}
 
+	@Override
+	public void onServerSelectorComplete(Server server) {
+	}
 }
