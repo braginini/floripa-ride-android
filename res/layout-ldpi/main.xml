@@ -45,7 +45,7 @@
 			android:layout_alignTop="@+id/tbStartLocation"
 			android:layout_alignBottom="@+id/tbEndLocation"
 			android:layout_alignParentRight="true"
-			android:src="@drawable/mode_transit"
+			android:src="@drawable/mode_bus"
 		    android:background="@drawable/button_layout">
 		</ImageButton>
 		
@@ -95,22 +95,8 @@
 		    android:src="@drawable/device_access_location_found"
 		    android:background="@drawable/button_layout">
 		</ImageButton>
-		
-	
-		<ImageButton
-		    android:id="@+id/btnHandle"
-		    android:layout_width="14dp"
-		    android:layout_height="38dp"
-		    android:layout_alignParentLeft="true"
-		    android:layout_above="@id/panelDisplayDirection"
-		    android:orientation="vertical"
-		    android:layout_marginTop="4dp"
-		    android:layout_marginBottom="4dp"
-		    android:src="@drawable/ic_navigation_drawer"
-		    android:background="@drawable/handle_layout">
-		</ImageButton>
-			
-				
+
+
 		<RelativeLayout
 			android:id="@id/panelDisplayDirection"
 		    android:layout_width="match_parent"

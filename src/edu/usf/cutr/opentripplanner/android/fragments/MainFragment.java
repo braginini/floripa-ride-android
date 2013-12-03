@@ -234,7 +234,6 @@ public class MainFragment extends Fragment implements
 
 	private ImageButton btnMyLocation;
 
-	private ImageButton btnHandle;
 	private DrawerLayout drawerLayout;
 
 	Marker startMarker;
@@ -327,12 +326,11 @@ public class MainFragment extends Fragment implements
 				int locationItinerarySelectionSpinner[] = new int[2];
 				itinerarySelectionSpinner.getLocationInWindow(locationItinerarySelectionSpinner);
 				int locationbtnHandle[] = new int[2];
-				btnHandle.getLocationInWindow(locationbtnHandle);
 				DisplayMetrics metrics = MainFragment.this.getResources().getDisplayMetrics();
 				int windowHeight = metrics.heightPixels;
 				int paddingMargin = MainFragment.this.getResources().getInteger(R.integer.map_padding_margin);
 				if (mMap != null) {
-					mMap.setPadding(locationbtnHandle[0] + btnHandle.getWidth() / 2 + paddingMargin,
+					mMap.setPadding(paddingMargin,
 							locationtbEndLocation[1] + tbEndLocation.getHeight() / 2 + paddingMargin,
 							0,
 							windowHeight - locationItinerarySelectionSpinner[1] + paddingMargin);
@@ -369,7 +367,6 @@ public class MainFragment extends Fragment implements
 		navigationDrawerLeftPane = (ViewGroup) mainView.findViewById(R.id.navigationDrawerLeftPane);
 		panelDisplayDirection = (ViewGroup) mainView.findViewById(R.id.panelDisplayDirection);
 
-		btnHandle = (ImageButton) mainView.findViewById(R.id.btnHandle);
 		drawerLayout = (DrawerLayout) mainView.findViewById(R.id.drawerLayout);
 
 		tbStartLocation.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -563,7 +560,7 @@ public class MainFragment extends Fragment implements
 				builder.setItems(items, new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int item) {
-						if (items[item].equals(getResources().getString(R.string.location_type_current_location))) {	
+						if (items[item].equals(getResources().getString(R.string.location_type_current_location))) {
 					/*		myActivity = (MyActivity) activity;
 							myActivity.getmLocationClient();
 							Location loc = this.MainFragment.getmLocationClient().getLastLocation();*/
@@ -629,7 +626,7 @@ public class MainFragment extends Fragment implements
 				builder.setItems(items, new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int item) {
-						if (items[item].equals(getResources().getString(R.string.location_type_current_location))) {	
+						if (items[item].equals(getResources().getString(R.string.location_type_current_location))) {
 					/*		myActivity = (MyActivity) activity;
 							myActivity.getmLocationClient();
 							Location loc = this.MainFragment.getmLocationClient().getLastLocation();*/
@@ -874,9 +871,9 @@ public class MainFragment extends Fragment implements
 		AdapterView.OnItemSelectedListener itinerarySpinnerListener = new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//		    	Toast.makeText(parent.getContext(), 
+//		    	Toast.makeText(parent.getContext(),
 //		    				   Long.toString(id) + " chosen " +
-//		    				   parent.getItemAtPosition(position).toString(), 
+//		    				   parent.getItemAtPosition(position).toString(),
 //		    				   Toast.LENGTH_SHORT).show();
 				fragmentListener.onItinerarySelected(position);
 
@@ -1087,7 +1084,6 @@ public class MainFragment extends Fragment implements
 				drawerLayout.openDrawer(Gravity.LEFT);
 			}
 		};
-		btnHandle.setOnClickListener(oclH);
 
 		OnInfoWindowClickListener omliwcl = new OnInfoWindowClickListener() {
 
@@ -1238,21 +1234,17 @@ public class MainFragment extends Fragment implements
 			RelativeLayout.LayoutParams paramsMyLocation = (android.widget.RelativeLayout.LayoutParams) btnMyLocation.getLayoutParams();
 			paramsMyLocation.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
 			btnMyLocation.setLayoutParams(paramsMyLocation);
-			RelativeLayout.LayoutParams paramsHandle = (android.widget.RelativeLayout.LayoutParams) btnHandle.getLayoutParams();
-			paramsHandle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-			btnHandle.setLayoutParams(paramsHandle);
+
 			btnMyLocation.requestLayout();
-			btnHandle.requestLayout();
 		} else {
 			panelDisplayDirection.setVisibility(View.INVISIBLE);
 			RelativeLayout.LayoutParams paramsMyLocation = (android.widget.RelativeLayout.LayoutParams) btnMyLocation.getLayoutParams();
 			paramsMyLocation.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 			btnMyLocation.setLayoutParams(paramsMyLocation);
-			RelativeLayout.LayoutParams paramsHandle = (android.widget.RelativeLayout.LayoutParams) btnHandle.getLayoutParams();
-			paramsHandle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-			btnHandle.setLayoutParams(paramsHandle);
+			///RelativeLayout.LayoutParams paramsHandle = (android.widget.RelativeLayout.LayoutParams) btnHandle.getLayoutParams();
+			//paramsHandle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 			btnMyLocation.requestLayout();
-			btnHandle.requestLayout();
+			//btnHandle.requestLayout();
 		}
 	}
 
