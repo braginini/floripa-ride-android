@@ -87,7 +87,7 @@
     <string name="settings">Opciones</string>
     <string name="feedback">Enviar comentario</string>
     <string name="feedback_send_email">Enviar mensaje</string>
-    <string name="feedback_subject">Informe para desarrollador de OTP</string>
+    <string name="feedback_subject">Informe para desarrollador</string>
     <string name="server_info">Información del servidor</string>
     <string name="start_marker_title">Salida</string>
     <string name="start_marker_activated">Lugar de origen</string>

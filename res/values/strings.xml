@@ -87,7 +87,7 @@
     <string name="settings">Settings</string>
     <string name="feedback">Feedback</string>
     <string name="feedback_send_email">Send message</string>
-    <string name="feedback_subject">Report to OTP Android developer</string>
+    <string name="feedback_subject">Report to developer</string>
     <string name="server_info">Server info</string>
     <string name="start_marker_title">Route start</string>
     <string name="start_marker_activated">Start location</string>

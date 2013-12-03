@@ -38,7 +38,7 @@
     <string name="tiles_mapnik">"http://a.tile.openstreetmap.org/{z}/{x}/{y}.png"</string>
     <string name="tiles_cyclemap">"http://a.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png"</string>
     <string name="tiles_mapbox">"http://a.tiles.mapbox.com/v3/mbraginini.map-hvjt7s3e/{z}/{x}/{y}.png"</string>
-    <string name="feedback_email_android_developer">opentripplanner@cutr.usf.edu</string>
+    <string name="feedback_email_android_developer">bangvalo@gmail.com</string>
     <string name="geocoder_nominatim">MapQuest Nominatim</string>
     <string name="geocoder_google_places">Google Places</string>
     <string name="custom_server_url_hint">http://x.x.x/otp-api-webapp/ws</string>    

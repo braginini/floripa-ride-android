@@ -87,7 +87,7 @@
     <string name="settings">Opțiuni</string>
     <string name="feedback">Trimiteți feedback</string>
     <string name="feedback_send_email">Trimiteți mesaj</string>
-    <string name="feedback_subject">Informații pentru programator de OTP</string>
+    <string name="feedback_subject">Informații pentru programator</string>
     <string name="server_info">Informații din server</string>
     <string name="start_marker_title">Plecare</string>
     <string name="start_marker_activated">Locul de plecare</string>

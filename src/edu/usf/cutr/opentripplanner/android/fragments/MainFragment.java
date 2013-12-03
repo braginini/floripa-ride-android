@@ -1946,15 +1946,10 @@ public class MainFragment extends Fragment implements
 				break;
 
 			case R.id.feedback:
-				Server selectedServer = app.getSelectedServer();
-
-				String[] recipients = {selectedServer.getContactEmail(),
-						getString(R.string.feedback_email_android_developer)};
 
 				String uriText = "mailto:";
-				for (int i = 0; i < recipients.length; i++) {
-					uriText += recipients[i] + ";";
-				}
+
+				uriText += getString(R.string.feedback_email_android_developer);
 
 				String subject = "";
 				subject += getResources().getString(R.string.feedback_subject);
@@ -1964,12 +1959,12 @@ public class MainFragment extends Fragment implements
 
 				String content = ((MyActivity) getActivity()).getCurrentRequestString();
 
-				try {
+				/*try {
 					uriText += "&body=" + URLEncoder.encode(content, OTPApp.URL_ENCODING);
 				} catch (UnsupportedEncodingException e1) {
 					e1.printStackTrace();
 					return false;
-				}
+				}*/
 
 				Uri uri = Uri.parse(uriText);
 

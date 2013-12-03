@@ -87,7 +87,7 @@
     <string name="settings">Einstellungen</string>
     <string name="feedback">Kontakt</string>
     <string name="feedback_send_email">Email senden</string>
-    <string name="feedback_subject">Nachricht an OTP Android Entwickler</string>
+    <string name="feedback_subject">Nachricht an Entwickler</string>
     <string name="server_info">Server Informationen</string>
     <string name="start_marker_title">Start</string>
     <string name="start_marker_activated">Startort</string>
