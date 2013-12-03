@@ -17,6 +17,7 @@
 package edu.usf.cutr.opentripplanner.android.fragments;
 
 import static edu.usf.cutr.opentripplanner.android.OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_BOUNDS;
+import static edu.usf.cutr.opentripplanner.android.OTPApp.PREFERENCE_KEY_SERVER_URL;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -40,7 +41,6 @@ import org.opentripplanner.v092snapshot.api.model.Itinerary;
 import org.opentripplanner.v092snapshot.api.model.Leg;
 
 import android.animation.LayoutTransition;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -137,7 +137,6 @@ import edu.usf.cutr.opentripplanner.android.listeners.DateCompleteListener;
 import edu.usf.cutr.opentripplanner.android.listeners.MetadataRequestCompleteListener;
 import edu.usf.cutr.opentripplanner.android.listeners.OTPGeocodingListener;
 import edu.usf.cutr.opentripplanner.android.listeners.OnFragmentListener;
-import edu.usf.cutr.opentripplanner.android.listeners.ServerSelectorCompleteListener;
 import edu.usf.cutr.opentripplanner.android.listeners.TripRequestCompleteListener;
 import edu.usf.cutr.opentripplanner.android.maps.MyUrlTileProvider;
 import edu.usf.cutr.opentripplanner.android.model.OTPBundle;
@@ -148,7 +147,6 @@ import edu.usf.cutr.opentripplanner.android.sqlite.ServersDataSource;
 import edu.usf.cutr.opentripplanner.android.tasks.MetadataRequest;
 import edu.usf.cutr.opentripplanner.android.tasks.OTPGeocoding;
 import edu.usf.cutr.opentripplanner.android.tasks.ServerChecker;
-import edu.usf.cutr.opentripplanner.android.tasks.ServerSelector;
 import edu.usf.cutr.opentripplanner.android.tasks.TripRequest;
 import edu.usf.cutr.opentripplanner.android.util.DateTimeConversion;
 import edu.usf.cutr.opentripplanner.android.util.DateTimeDialog;
@@ -165,7 +163,6 @@ import edu.usf.cutr.opentripplanner.android.util.RightDrawableOnTouchListener;
  */
 
 public class MainFragment extends Fragment implements
-		ServerSelectorCompleteListener,
 		TripRequestCompleteListener, MetadataRequestCompleteListener,
 		OTPGeocodingListener, LocationListener,
 		DateCompleteListener, OnRangeSeekBarChangeListener<Double>,
@@ -418,6 +415,7 @@ public class MainFragment extends Fragment implements
 		prefs = PreferenceManager.getDefaultSharedPreferences(
 				applicationContext);
 
+
 		locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
 
@@ -426,9 +424,11 @@ public class MainFragment extends Fragment implements
 		mLocationRequest.setInterval(OTPApp.UPDATE_INTERVAL);
 		mLocationRequest.setFastestInterval(OTPApp.FASTEST_INTERVAL);
 
+		SharedPreferences.Editor prefsEditor = prefs.edit();
+		prefsEditor.putString(OTPApp.PREFERENCE_KEY_SERVER_URL, OTPApp.SERVER_BASE_URL);
+		prefsEditor.commit();
 
 		if (savedInstanceState == null) {
-			SharedPreferences.Editor prefsEditor = prefs.edit();
 			prefsEditor.putBoolean(OTPApp.PREFERENCE_KEY_ORIGIN_IS_MY_LOCATION, true);
 			prefsEditor.putBoolean(OTPApp.PREFERENCE_KEY_DESTINATION_IS_MY_LOCATION, false);
 			prefsEditor.commit();
@@ -436,32 +436,16 @@ public class MainFragment extends Fragment implements
 			bikeTriangleParameters.setSelectedMaxValue(OTPApp.BIKE_PARAMETERS_FLAT_DEFAULT_VALUE);
 		}
 
+		updateServerMetadata();
+
 		if (!mapFailed) {
-			if (prefs.getBoolean(OTPApp.PREFERENCE_KEY_SELECTED_CUSTOM_SERVER, false)) {
-				String baseURL = prefs.getString(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_URL, "");
-				Server s = new Server(baseURL, applicationContext);
-				String bounds;
-				setSelectedServer(s, false);
-				if ((bounds = prefs.getString(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_BOUNDS, null)) != null) {
-					s.setBounds(bounds);
-					addBoundariesRectangle(s);
-				}
-
-				Log.v(TAG, "Now using custom OTP server: " + baseURL);
-			} else {
-				ServersDataSource dataSource = ServersDataSource.getInstance(applicationContext);
-				long serverId = prefs.getLong(OTPApp.PREFERENCE_KEY_SELECTED_SERVER, 0);
-				if (serverId != 0) {
-					dataSource.open();
-					Server s = dataSource.getServer(prefs.getLong(OTPApp.PREFERENCE_KEY_SELECTED_SERVER, 0));
-					dataSource.close();
-
-					if (s != null) {
-						setSelectedServer(s, false);
-						addBoundariesRectangle(s);
-						Log.v(TAG, "Now using OTP server: " + s.getRegion());
-					}
-				}
+			String baseURL = prefs.getString(OTPApp.PREFERENCE_KEY_SERVER_URL, OTPApp.SERVER_BASE_URL);
+			Server s = new Server(baseURL, applicationContext);
+			String bounds;
+			setSelectedServer(s, false);
+			if ((bounds = prefs.getString(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_BOUNDS, null)) != null) {
+				s.setBounds(bounds);
+				addBoundariesRectangle(s);
 			}
 		}
 
@@ -526,7 +510,7 @@ public class MainFragment extends Fragment implements
 		mMap.setMyLocationEnabled(true);
 		mMap.setOnCameraChangeListener(this);
 		uiSettings.setMyLocationButtonEnabled(false);
-		uiSettings.setCompassEnabled(true);
+		uiSettings.setCompassEnabled(true);                                             ;
 		uiSettings.setAllGesturesEnabled(true);
 		uiSettings.setZoomControlsEnabled(false);
 
@@ -1531,56 +1515,6 @@ public class MainFragment extends Fragment implements
 		}
 	}
 
-
-	/**
-	 * Triggers ServerSelector task to retrieve servers list.
-	 * <p/>
-	 * Server list will be downloaded or retrieved from the database.
-	 * <p/>
-	 * A valid location should be passed to perform server autodetection if the
-	 * preference is set. If location is null a toast will be displayed
-	 * informing of the error.
-	 * <p/>
-	 * It it's not possible or not requested to autodetect the server list will
-	 * be displayed.
-	 *
-	 * @param mCurrentLatLng location to use if servers should be detected
-	 */
-	public void runAutoDetectServer(LatLng mCurrentLatLng, boolean showDialog) {
-		if ((mCurrentLatLng == null) || (mMap == null)) {
-			Toast.makeText(applicationContext, applicationContext.getResources().getString(R.string.location_error), Toast.LENGTH_LONG).show();
-		} else {
-			ServersDataSource dataSource = ServersDataSource.getInstance(applicationContext);
-			WeakReference<Activity> weakContext = new WeakReference<Activity>(getActivity());
-
-			ServerSelector serverSelector = new ServerSelector(weakContext, applicationContext, dataSource, this, needToUpdateServersList, showDialog);
-			serverSelector.execute(mCurrentLatLng);
-			savedLastLocationCheckedForServer = mCurrentLatLng;
-		}
-		setNeedToRunAutoDetect(false);
-		setNeedToUpdateServersList(false);
-	}
-
-	/**
-	 * Triggers ServerSelector task to retrieve servers list.
-	 * <p/>
-	 * Server list will be downloaded or retrieved from the database.
-	 * <p/>
-	 * A servers list will be displayed or a toast informing of the error.
-	 * <p/>
-	 */
-	public void runAutoDetectServerNoLocation(boolean showDialog) {
-		ServersDataSource dataSource = ServersDataSource.getInstance(applicationContext);
-		WeakReference<Activity> weakContext = new WeakReference<Activity>(getActivity());
-
-		ServerSelector serverSelector = new ServerSelector(weakContext, applicationContext, dataSource, this, needToUpdateServersList, showDialog);
-		LatLng latLngList[] = new LatLng[1];
-		latLngList[0] = null;
-		serverSelector.execute(latLngList);
-		setNeedToRunAutoDetect(false);
-		setNeedToUpdateServersList(false);
-	}
-
 	/**
 	 * Registers the server in the OTPApp class.
 	 * <p/>
@@ -1835,8 +1769,6 @@ public class MainFragment extends Fragment implements
 				enableUIElements(true);
 
 				initializeMapInterface(mMap);
-
-				runAutoDetectServerNoLocation(true);
 			}
 		}
 		
@@ -1986,36 +1918,11 @@ public class MainFragment extends Fragment implements
 		super.onDestroy();
 	}
 
+	public void updateServerMetadata() {
+		WeakReference<Activity> weakContext = new WeakReference<Activity>(getActivity());
 
-	public void updateSelectedServer() {
-		if (prefs.getBoolean(OTPApp.PREFERENCE_KEY_SELECTED_CUSTOM_SERVER, false)) {
-			setSelectedServer(new Server(prefs.getString(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_URL, ""), applicationContext), true);
-			Log.v(TAG, "Now using custom OTP server: " + prefs.getString(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_URL, ""));
-			WeakReference<Activity> weakContext = new WeakReference<Activity>(getActivity());
-
-			MetadataRequest metaRequest = new MetadataRequest(weakContext, applicationContext, this);
-			metaRequest.execute(prefs.getString(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_URL, ""));
-		} else {
-			long serverId = prefs.getLong(OTPApp.PREFERENCE_KEY_SELECTED_SERVER, 0);
-			if (serverId != 0) {
-				ServersDataSource dataSource = ServersDataSource.getInstance(applicationContext);
-				dataSource.open();
-				Server s = new Server(dataSource.getServer(prefs.getLong(OTPApp.PREFERENCE_KEY_SELECTED_SERVER, 0)));
-				dataSource.close();
-
-				setSelectedServer(s, true);
-				addBoundariesRectangle(s);
-
-				LatLng mCurrentLatLng = getLastLocation();
-
-				if ((mCurrentLatLng != null) && (LocationUtil.checkPointInBoundingBox(mCurrentLatLng, s, OTPApp.CHECK_BOUNDS_ACCEPTABLE_ERROR))) {
-					mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, getServerInitialZoom(s)));
-				} else {
-					mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(getServerCenter(s), getServerInitialZoom(s)));
-					setMarker(true, getServerCenter(s), false);
-				}
-			}
-		}
+		MetadataRequest metaRequest = new MetadataRequest(weakContext, applicationContext, this);
+		metaRequest.execute(prefs.getString(OTPApp.PREFERENCE_KEY_SERVER_URL, ""));
 	}
 
 	@Override
@@ -2045,11 +1952,7 @@ public class MainFragment extends Fragment implements
 						Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 				startActivity(myIntent);
 				break;
-			case R.id.settings:
-				getActivity().startActivityForResult(
-						new Intent(getActivity(), SettingsActivity.class),
-						OTPApp.SETTINGS_REQUEST_CODE);
-				break;
+
 			case R.id.feedback:
 				Server selectedServer = app.getSelectedServer();
 
@@ -2081,23 +1984,6 @@ public class MainFragment extends Fragment implements
 				Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
 				sendIntent.setData(uri);
 				startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.feedback_send_email)));
-
-				break;
-			case R.id.server_info:
-				Server server = app.getSelectedServer();
-
-				if (server == null) {
-					Log.w(TAG,
-							"Tried to get server info when no server was selected");
-					Toast.makeText(applicationContext, applicationContext.getResources().getString(R.string.info_server_no_server_selected), Toast.LENGTH_SHORT).show();
-					break;
-				}
-
-				WeakReference<Activity> weakContext = new WeakReference<Activity>(getActivity());
-
-				ServerChecker serverChecker = new ServerChecker(weakContext, applicationContext, true);
-				serverChecker.execute(server);
-
 
 				break;
 			default:
@@ -2767,7 +2653,7 @@ public class MainFragment extends Fragment implements
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 	    /*
-         * Google Play services can resolve some errors it detects.
+	     * Google Play services can resolve some errors it detects.
          * If the error has a resolution, try sending an Intent to
          * start a Google Play services activity that can resolve
          * error.
@@ -2779,7 +2665,7 @@ public class MainFragment extends Fragment implements
 					connectionResult.startResolutionForResult(
 							getActivity(),
 							OTPApp.CONNECTION_FAILURE_RESOLUTION_REQUEST_CODE);
-                    /*
+		            /*
                      * Thrown if Google Play services canceled the original
                      * PendingIntent
                      */
@@ -2797,6 +2683,11 @@ public class MainFragment extends Fragment implements
 		}
 	}
 
+	/**
+	 * Can do server check here (download address from the spreadsheet)
+	 *
+	 * @param connectionHint
+	 */
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		Location mCurrentLocation = mLocationClient.getLastLocation();
@@ -2817,63 +2708,26 @@ public class MainFragment extends Fragment implements
 
 				Location.distanceBetween(savedLatitude, savedLongitude, mCurrentLatLng.latitude, mCurrentLatLng.longitude, distance);
 
-				if (!checkServersAreUpdated()) {
-					runAutoDetectServer(mCurrentLatLng, false);
-				} else {
-					if (needToRunAutoDetect) {
-						runAutoDetectServer(mCurrentLatLng, true);
-					} else if (prefs.getBoolean(OTPApp.PREFERENCE_KEY_AUTO_DETECT_SERVER, true)) {
-
-						if ((app.getSelectedServer() != null)
-								&& (!LocationUtil.checkPointInBoundingBox(mCurrentLatLng, app.getSelectedServer(), OTPApp.CHECK_BOUNDS_ACCEPTABLE_ERROR))
-								&& (((savedLastLocationCheckedForServer != null) && (distance[0] > OTPApp.COORDINATES_IMPORTANT_DIFFERENCE))
-								|| (savedLastLocationCheckedForServer == null))) {
-							runAutoDetectServer(mCurrentLatLng, false);
-						} else if (app.getSelectedServer() == null) {
-							runAutoDetectServer(mCurrentLatLng, true);
-						}
-					} else {
-						if (mCurrentLatLng != null) {
-							if (appStarts) {
-								Server selectedServer = app.getSelectedServer();
-								if ((selectedServer != null) && selectedServer.areBoundsSet()) {
-									if (LocationUtil.checkPointInBoundingBox(mCurrentLatLng, selectedServer, OTPApp.CHECK_BOUNDS_ACCEPTABLE_ERROR)) {
-										mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, getServerInitialZoom(selectedServer)));
-									} else {
-										mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(getServerCenter(selectedServer), getServerInitialZoom(selectedServer)));
-										setMarker(true, getServerCenter(selectedServer), false);
-									}
-								} else {
-									mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, getServerInitialZoom(selectedServer)));
-								}
+				if (mCurrentLatLng != null) {
+					if (appStarts) {
+						Server selectedServer = app.getSelectedServer();
+						if ((selectedServer != null) && selectedServer.areBoundsSet()) {
+							if (LocationUtil.checkPointInBoundingBox(mCurrentLatLng, selectedServer, OTPApp.CHECK_BOUNDS_ACCEPTABLE_ERROR)) {
+								mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, getServerInitialZoom(selectedServer)));
+							} else {
+								mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(getServerCenter(selectedServer), getServerInitialZoom(selectedServer)));
+								setMarker(true, getServerCenter(selectedServer), false);
 							}
+						} else {
+							mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLatLng, getServerInitialZoom(selectedServer)));
 						}
 					}
-
-					appStarts = false;
 				}
-			} else if (app.getSelectedServer() == null) {
-				runAutoDetectServerNoLocation(true);
+
+				appStarts = false;
 			}
 		}
 
-	}
-
-	private boolean checkServersAreUpdated() {
-		ServersDataSource dataSource = ServersDataSource.getInstance(applicationContext);
-		dataSource.open();
-		boolean result;
-		Calendar someDaysBefore = Calendar.getInstance();
-		someDaysBefore.add(Calendar.DAY_OF_MONTH, -OTPApp.EXPIRATION_DAYS_FOR_SERVER_LIST);
-		Long serversUpdateDate = dataSource.getMostRecentDate();
-		if ((serversUpdateDate != null) && (someDaysBefore.getTime().getTime() > serversUpdateDate)) {
-			result = false;
-		} else {
-			result = true;
-		}
-		dataSource.close();
-
-		return result;
 	}
 
 	@Override
@@ -2959,9 +2813,5 @@ public class MainFragment extends Fragment implements
 		bikeTriangleMaxValue = maxValue;
 		String bikeParam = minValue.toString() + maxValue.toString();
 		Log.v(TAG, bikeParam);
-	}
-
-	@Override
-	public void onServerSelectorComplete(Server server) {
 	}
 }

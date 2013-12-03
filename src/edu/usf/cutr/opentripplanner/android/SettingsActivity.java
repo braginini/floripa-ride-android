@@ -77,7 +77,7 @@ public class SettingsActivity extends PreferenceActivity implements ServerChecke
 		mapTileProvider = (ListPreference) findPreference(OTPApp.PREFERENCE_KEY_MAP_TILE_SOURCE);
 		geocoderProvider = (ListPreference) findPreference(OTPApp.PREFERENCE_KEY_GEOCODER_PROVIDER);
 		autoDetectServer = (CheckBoxPreference) findPreference(OTPApp.PREFERENCE_KEY_AUTO_DETECT_SERVER);
-		customServerURL = (EditTextPreference) findPreference(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_URL);
+		customServerURL = (EditTextPreference) findPreference(OTPApp.PREFERENCE_KEY_SERVER_URL);
 		selectedCustomServer = (CheckBoxPreference) findPreference(OTPApp.PREFERENCE_KEY_SELECTED_CUSTOM_SERVER);
 		maxWalkingDistance = (EditTextPreference) findPreference(OTPApp.PREFERENCE_KEY_MAX_WALKING_DISTANCE);
 
@@ -225,7 +225,7 @@ public class SettingsActivity extends PreferenceActivity implements ServerChecke
 			autoDetectServer.setEnabled(false);
 		}
 		
-		selectedCustomServer.setDependency(OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_URL);
+		selectedCustomServer.setDependency(OTPApp.PREFERENCE_KEY_SERVER_URL);
 
 		customServerURL.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
 

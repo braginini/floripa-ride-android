@@ -107,6 +107,8 @@ public class OTPApp extends Application {
     public static final String BUNDLE_KEY_TIMEPICKER_SAVED_MINUTE = "timepicker minutes";
 
     public static final String BUNDLE_KEY_SETTINGS_INTENT = "timepicker minutes";
+
+	public static final String SERVER_BASE_URL = "http://ec2-54-207-21-176.sa-east-1.compute.amazonaws.com:8080/opentripplanner-api-webapp/ws";
     
     public static final int COLOR_ROUTE_LINE = 0x7F0000FF;
 
@@ -119,7 +121,7 @@ public class OTPApp extends Application {
 	public static final String PREFERENCE_KEY_GEOCODER_PROVIDER = "geocoder_provider";
 	public static final String PREFERENCE_KEY_ROUTING_OPTIONS = "routing_options";
 	public static final String PREFERENCE_KEY_AUTO_DETECT_SERVER = "auto_detect_server";
-	public static final String PREFERENCE_KEY_CUSTOM_SERVER_URL = "custom_server_url";
+	public static final String PREFERENCE_KEY_SERVER_URL = "server_url";
 	public static final String PREFERENCE_KEY_CUSTOM_SERVER_BOUNDS = "custom_server_bounds";
 	public static final String PREFERENCE_KEY_CUSTOM_SERVER_URL_IS_VALID = "custom_server_url_is_valid";
 	public static final String PREFERENCE_KEY_REFRESH_SERVER_LIST = "refresh_server_list";
@@ -130,7 +132,7 @@ public class OTPApp extends Application {
 	public static final String PREFERENCE_KEY_SELECTED_CUSTOM_SERVER = "selected_custom_server";
 	public static final String PREFERENCE_KEY_USE_ANDROID_GEOCODER = "use_android_geocoder";
 	public static final String PREFERENCE_KEY_USE_INTELLIGENT_MARKERS = "use_intelligent_markers";
-	
+
 	private static Server selectedServer;
 	
 	public static final String TAG = "OTP";

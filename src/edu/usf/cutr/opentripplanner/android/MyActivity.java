@@ -111,7 +111,7 @@ public class MyActivity extends FragmentActivity implements OnFragmentListener{
 					mainFragment.setNeedToUpdateServersList(true);
 				}
 				if(changedSelectedCustomServer){
-					mainFragment.updateSelectedServer();
+					//mainFragment.updateSelectedServer();
 				}
 				if(changedTileProvider){
 					mainFragment.updateOverlay(null);

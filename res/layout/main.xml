@@ -95,8 +95,8 @@
 		    android:src="@drawable/device_access_location_found"
 		    android:background="@drawable/button_layout">
 		</ImageButton>
-		
-	
+
+
 		<ImageButton
 		    android:id="@+id/btnHandle"
 		    android:layout_width="20dp"
@@ -109,8 +109,8 @@
 		    android:src="@drawable/ic_navigation_drawer"
 		    android:background="@drawable/handle_layout">
 		</ImageButton>
-			
-				
+
+
 		<RelativeLayout
 			android:id="@id/panelDisplayDirection"
 		    android:layout_width="match_parent"
