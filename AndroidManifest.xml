@@ -51,8 +51,7 @@
         android:smallScreens="true" />
     
     <application
-        android:name=".OTPApp"  
-        android:icon="@drawable/ic_launcher_opentripplanner"
+        android:name=".OTPApp"
         android:label="@string/app_name"
         android:allowBackup="true">
         <activity
