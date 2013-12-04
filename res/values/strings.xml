@@ -75,7 +75,7 @@
     <string name="mode_walk_action">Walk</string>
     <string name="mode_bicycle">Bicycle</string>
     <string name="mode_bicycle_action">Bike</string>
-    <string name="mode_transit_bicycle">Transit and bicycle</string>
+    <string name="mode_transit_bicycle">Bus and bicycle</string>
     <string name="optimization_quick">Quickest</string>
     <string name="optimization_safe">Safest</string>
     <string name="optimization_fewest_transfers">Fewest transfers</string>
@@ -86,6 +86,7 @@
     <string name="my_location">My location</string>
     <string name="settings">Settings</string>
     <string name="feedback">Feedback</string>
+    <string name="clear">Clear</string>
     <string name="feedback_send_email">Send message</string>
     <string name="feedback_subject">Report to developer</string>
     <string name="server_info">Server info</string>

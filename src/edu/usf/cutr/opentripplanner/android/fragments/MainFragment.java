@@ -17,7 +17,6 @@
 package edu.usf.cutr.opentripplanner.android.fragments;
 
 import static edu.usf.cutr.opentripplanner.android.OTPApp.PREFERENCE_KEY_CUSTOM_SERVER_BOUNDS;
-import static edu.usf.cutr.opentripplanner.android.OTPApp.PREFERENCE_KEY_SERVER_URL;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
@@ -132,7 +131,6 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import edu.usf.cutr.opentripplanner.android.MyActivity;
 import edu.usf.cutr.opentripplanner.android.OTPApp;
 import edu.usf.cutr.opentripplanner.android.R;
-import edu.usf.cutr.opentripplanner.android.SettingsActivity;
 import edu.usf.cutr.opentripplanner.android.listeners.DateCompleteListener;
 import edu.usf.cutr.opentripplanner.android.listeners.MetadataRequestCompleteListener;
 import edu.usf.cutr.opentripplanner.android.listeners.OTPGeocodingListener;
@@ -143,10 +141,8 @@ import edu.usf.cutr.opentripplanner.android.model.OTPBundle;
 import edu.usf.cutr.opentripplanner.android.model.OptimizeSpinnerItem;
 import edu.usf.cutr.opentripplanner.android.model.Server;
 import edu.usf.cutr.opentripplanner.android.model.TraverseModeSpinnerItem;
-import edu.usf.cutr.opentripplanner.android.sqlite.ServersDataSource;
 import edu.usf.cutr.opentripplanner.android.tasks.MetadataRequest;
 import edu.usf.cutr.opentripplanner.android.tasks.OTPGeocoding;
-import edu.usf.cutr.opentripplanner.android.tasks.ServerChecker;
 import edu.usf.cutr.opentripplanner.android.tasks.TripRequest;
 import edu.usf.cutr.opentripplanner.android.util.DateTimeConversion;
 import edu.usf.cutr.opentripplanner.android.util.DateTimeDialog;
@@ -233,6 +229,8 @@ public class MainFragment extends Fragment implements
 	private ImageButton btnDisplayDirection;
 
 	private ImageButton btnMyLocation;
+
+	private ImageButton btnHandle;
 
 	private DrawerLayout drawerLayout;
 
@@ -326,11 +324,12 @@ public class MainFragment extends Fragment implements
 				int locationItinerarySelectionSpinner[] = new int[2];
 				itinerarySelectionSpinner.getLocationInWindow(locationItinerarySelectionSpinner);
 				int locationbtnHandle[] = new int[2];
+				btnHandle.getLocationInWindow(locationbtnHandle);
 				DisplayMetrics metrics = MainFragment.this.getResources().getDisplayMetrics();
 				int windowHeight = metrics.heightPixels;
 				int paddingMargin = MainFragment.this.getResources().getInteger(R.integer.map_padding_margin);
 				if (mMap != null) {
-					mMap.setPadding(paddingMargin,
+					mMap.setPadding(locationbtnHandle[0] + btnHandle.getWidth() / 2 + paddingMargin,
 							locationtbEndLocation[1] + tbEndLocation.getHeight() / 2 + paddingMargin,
 							0,
 							windowHeight - locationItinerarySelectionSpinner[1] + paddingMargin);
@@ -350,12 +349,9 @@ public class MainFragment extends Fragment implements
 		bikeTriangleParameters = new RangeSeekBar<Double>(OTPApp.BIKE_PARAMETERS_MIN_VALUE, OTPApp.BIKE_PARAMETERS_MAX_VALUE, this.getActivity().getApplicationContext(), R.color.sysRed, R.color.sysGreen, R.color.sysBlue, R.drawable.seek_thumb_normal, R.drawable.seek_thumb_pressed);
 
 		// add RangeSeekBar to pre-defined layout
-		bikeTriangleParametersLayout = (ViewGroup) mainView.findViewById(R.id.bikeParametersLayout);
+		//bikeTriangleParametersLayout = (ViewGroup) mainView.findViewById(R.id.bikeParametersLayout);
 
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-		params.addRule(RelativeLayout.BELOW, R.id.bikeParametersTags);
-
-		bikeTriangleParametersLayout.addView(bikeTriangleParameters, params);
 
 		btnMyLocation = (ImageButton) mainView.findViewById(R.id.btnMyLocation);
 
@@ -367,6 +363,7 @@ public class MainFragment extends Fragment implements
 		navigationDrawerLeftPane = (ViewGroup) mainView.findViewById(R.id.navigationDrawerLeftPane);
 		panelDisplayDirection = (ViewGroup) mainView.findViewById(R.id.panelDisplayDirection);
 
+		btnHandle = (ImageButton) mainView.findViewById(R.id.btnHandle);
 		drawerLayout = (DrawerLayout) mainView.findViewById(R.id.drawerLayout);
 
 		tbStartLocation.setImeOptions(EditorInfo.IME_ACTION_NEXT);
@@ -459,17 +456,13 @@ public class MainFragment extends Fragment implements
 		ArrayAdapter<TraverseModeSpinnerItem> traverseModeAdapter = new ArrayAdapter<TraverseModeSpinnerItem>(
 				getActivity(), android.R.layout.simple_list_item_single_choice,
 				new TraverseModeSpinnerItem[]{
-						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_transit),
-								new TraverseModeSet(TraverseMode.TRANSIT,
-										TraverseMode.WALK)),
 						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_bus),
 								new TraverseModeSet(TraverseMode.BUSISH,
 										TraverseMode.WALK)),
-						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_train),
-								new TraverseModeSet(TraverseMode.TRAINISH,
-										TraverseMode.WALK)), // not sure
 						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_walk),
 								new TraverseModeSet(TraverseMode.WALK)),
+						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_car),
+								new TraverseModeSet(TraverseMode.CAR)),
 						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_bicycle),
 								new TraverseModeSet(TraverseMode.BICYCLE)),
 						new TraverseModeSpinnerItem(getResources().getString(R.string.mode_transit_bicycle),
@@ -491,7 +484,6 @@ public class MainFragment extends Fragment implements
 		if (savedInstanceState == null) {
 			ddlOptimization.setItemChecked(0, true);
 			ddlTravelMode.setItemChecked(0, true);
-			showBikeParameters(false);
 			arriveBy = false;
 			setTextBoxLocation(getResources().getString(R.string.my_location), true);
 		}
@@ -507,7 +499,8 @@ public class MainFragment extends Fragment implements
 		mMap.setMyLocationEnabled(true);
 		mMap.setOnCameraChangeListener(this);
 		uiSettings.setMyLocationButtonEnabled(false);
-		uiSettings.setCompassEnabled(true);                                             ;
+		uiSettings.setCompassEnabled(true);
+		;
 		uiSettings.setAllGesturesEnabled(true);
 		uiSettings.setZoomControlsEnabled(false);
 
@@ -909,12 +902,12 @@ public class MainFragment extends Fragment implements
 			public void onItemClick(AdapterView<?> parent, View view,
 			                        int position, long id) {
 				TraverseModeSpinnerItem traverseModeSpinnerItem = (TraverseModeSpinnerItem) ddlTravelMode.getItemAtPosition(position);
-				if (traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.BICYCLE)) {
-					setBikeOptimizationAdapter(true);
-					showBikeParameters(true);
+				if (traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.BUSISH) ||
+						traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.BUS) ||
+						traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.TRANSIT)) {
+					setTransitOptimizationAdapter(true);
 				} else {
-					setBikeOptimizationAdapter(false);
-					showBikeParameters(false);
+					setTransitOptimizationAdapter(false);
 				}
 
 				btnPlanTrip.setImageBitmap(BitmapFactory.decodeResource(getResources(), ItineraryDecrypt.getModeIcon(traverseModeSpinnerItem.getTraverseModeSet())));
@@ -926,7 +919,6 @@ public class MainFragment extends Fragment implements
 			                        int position, long id) {
 
 				OptimizeSpinnerItem optimizeSpinnerItem = (OptimizeSpinnerItem) ddlOptimization.getItemAtPosition(position);
-				showBikeParameters(optimizeSpinnerItem.getOptimizeType().equals(OptimizeType.TRIANGLE));
 
 			}
 		});
@@ -1085,6 +1077,8 @@ public class MainFragment extends Fragment implements
 			}
 		};
 
+		btnHandle.setOnClickListener(oclH);
+
 		OnInfoWindowClickListener omliwcl = new OnInfoWindowClickListener() {
 
 			@Override
@@ -1149,17 +1143,15 @@ public class MainFragment extends Fragment implements
 				savedLastLocation = savedInstanceState.getParcelable(OTPApp.BUNDLE_KEY_SAVED_LAST_LOCATION);
 				savedLastLocationCheckedForServer = savedInstanceState.getParcelable(OTPApp.BUNDLE_KEY_SAVED_LAST_LOCATION_CHECKED_FOR_SERVER);
 
-				showBikeParameters(false);
 
 				ddlTravelMode.setItemChecked(savedInstanceState.getInt(OTPApp.BUNDLE_KEY_DDL_TRAVEL_MODE), true);
 				TraverseModeSpinnerItem traverseModeSpinnerItem = (TraverseModeSpinnerItem) ddlTravelMode.getItemAtPosition(ddlTravelMode.getCheckedItemPosition());
-				if (traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.BICYCLE)) {
-					setBikeOptimizationAdapter(true);
-					ddlOptimization.setItemChecked(savedInstanceState.getInt(OTPApp.BUNDLE_KEY_DDL_OPTIMIZATION), true);
-					OptimizeSpinnerItem optimizeSpinnerItem = (OptimizeSpinnerItem) ddlOptimization.getItemAtPosition(ddlOptimization.getCheckedItemPosition());
-					if (optimizeSpinnerItem.getOptimizeType().equals(OptimizeType.TRIANGLE)) {
-						showBikeParameters(true);
-					}
+				if (traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.TRANSIT) ||
+						traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.BUS) ||
+						traverseModeSpinnerItem.getTraverseModeSet().contains(TraverseMode.BUSISH)) {
+					setTransitOptimizationAdapter(true);
+				} else {
+					setTransitOptimizationAdapter(false);
 				}
 				ddlTravelMode.setItemChecked(savedInstanceState.getInt(OTPApp.BUNDLE_KEY_DDL_TRAVEL_MODE), true);
 
@@ -1234,17 +1226,21 @@ public class MainFragment extends Fragment implements
 			RelativeLayout.LayoutParams paramsMyLocation = (android.widget.RelativeLayout.LayoutParams) btnMyLocation.getLayoutParams();
 			paramsMyLocation.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
 			btnMyLocation.setLayoutParams(paramsMyLocation);
-
+			RelativeLayout.LayoutParams paramsHandle = (android.widget.RelativeLayout.LayoutParams) btnHandle.getLayoutParams();
+			paramsHandle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+			btnHandle.setLayoutParams(paramsHandle);
 			btnMyLocation.requestLayout();
+			btnHandle.requestLayout();
 		} else {
 			panelDisplayDirection.setVisibility(View.INVISIBLE);
 			RelativeLayout.LayoutParams paramsMyLocation = (android.widget.RelativeLayout.LayoutParams) btnMyLocation.getLayoutParams();
 			paramsMyLocation.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 			btnMyLocation.setLayoutParams(paramsMyLocation);
-			///RelativeLayout.LayoutParams paramsHandle = (android.widget.RelativeLayout.LayoutParams) btnHandle.getLayoutParams();
-			//paramsHandle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+			RelativeLayout.LayoutParams paramsHandle = (android.widget.RelativeLayout.LayoutParams) btnHandle.getLayoutParams();
+			paramsHandle.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+			btnHandle.setLayoutParams(paramsHandle);
 			btnMyLocation.requestLayout();
-			//btnHandle.requestLayout();
+			btnHandle.requestLayout();
 		}
 	}
 
@@ -1425,37 +1421,23 @@ public class MainFragment extends Fragment implements
 	}
 
 	/**
-	 * Wrapper to trigger functions to disable bike parameters and effectively
-	 * show them as inactive (faded).
-	 *
-	 * @param enable when true parameters are shown
-	 */
-	private void showBikeParameters(boolean enable) {
-		setRangeSeekBarStateColors(enable, bikeTriangleParameters);
-		disableEnableControls(enable, bikeTriangleParametersLayout);
-	}
-
-	/**
 	 * Changes optimization spinner values to show values compatibles with
 	 * bikes or with transit.
 	 * <p/>
 	 * Replaces fewest transfers with safer trip options.
-	 *
-	 * @param enable when true spinner is set to bike values
 	 */
-	private void setBikeOptimizationAdapter(boolean enable) {
+	private void setTransitOptimizationAdapter(boolean enable) {
 		ArrayAdapter<OptimizeSpinnerItem> optimizationAdapter;
 
-		if (enable) {
+		if (!enable) {
 			optimizationAdapter = new ArrayAdapter<OptimizeSpinnerItem>(
 					getActivity(),
 					android.R.layout.simple_list_item_single_choice,
 					new OptimizeSpinnerItem[]{
 							new OptimizeSpinnerItem(getResources().getString(R.string.optimization_quick), OptimizeType.QUICK),
-							new OptimizeSpinnerItem(getResources().getString(R.string.optimization_safe), OptimizeType.SAFE),
-							new OptimizeSpinnerItem(getResources().getString(R.string.optimization_bike_triangle), OptimizeType.TRIANGLE)});
+							new OptimizeSpinnerItem(getResources().getString(R.string.optimization_safe), OptimizeType.SAFE)});
 			ddlOptimization.setAdapter(optimizationAdapter);
-			ddlOptimization.setItemChecked(2, true);
+			ddlOptimization.setItemChecked(0, true);
 		} else {
 			optimizationAdapter = new ArrayAdapter<OptimizeSpinnerItem>(
 					getActivity(),
@@ -1468,43 +1450,7 @@ public class MainFragment extends Fragment implements
 			ddlOptimization.setAdapter(optimizationAdapter);
 			ddlOptimization.setItemChecked(0, true);
 		}
-	}
 
-	/**
-	 * Toggles between standard colors and faded colors for the passed seekbar
-	 * to visually show that it's disabled.
-	 *
-	 * @param enable  when true standard colors are used
-	 * @param seekBar bar that will be toggled
-	 */
-	private void setRangeSeekBarStateColors(boolean enable, RangeSeekBar<Double> seekBar) {
-		if (enable) {
-			seekBar.setLeftColor(getResources().getColor(R.color.sysRed));
-			seekBar.setMiddleColor(getResources().getColor(R.color.sysGreen));
-			seekBar.setRightColor(getResources().getColor(R.color.sysBlue));
-		} else {
-			seekBar.setLeftColor(getResources().getColor(R.color.sysRedFaded));
-			seekBar.setMiddleColor(getResources().getColor(R.color.sysGreenFaded));
-			seekBar.setRightColor(getResources().getColor(R.color.sysBlueFaded));
-		}
-
-	}
-
-	/**
-	 * Recursively enable/disable all the views contained in a ViewGroup and
-	 * it's descendants.
-	 *
-	 * @param enable when true views will be disable
-	 * @param vg     a ViewGroup that will be modified
-	 */
-	private void disableEnableControls(boolean enable, ViewGroup vg) {
-		for (int i = 0; i < vg.getChildCount(); i++) {
-			View child = vg.getChildAt(i);
-			child.setEnabled(enable);
-			if (child instanceof ViewGroup) {
-				disableEnableControls(enable, (ViewGroup) child);
-			}
-		}
 	}
 
 	/**
@@ -1943,6 +1889,12 @@ public class MainFragment extends Fragment implements
 				Intent myIntent = new Intent(
 						Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 				startActivity(myIntent);
+				break;
+			case R.id.clear:
+				tbStartLocation.setText("");
+				tbEndLocation.setText("");
+
+				//todo refresh map
 				break;
 
 			case R.id.feedback:
@@ -2412,6 +2364,9 @@ public class MainFragment extends Fragment implements
 					} else if (traverseMode.equals(TraverseMode.BICYCLE)) {
 						itinerarySummaryList[i] = getString(R.string.before_distance_bike) + " " + String.format(OTPApp.FORMAT_DISTANCE_METERS_SHORT, it.walkDistance) + getResources().getString(R.string.distance_unit);
 						itinerarySummaryList[i] += " " + getString(R.string.connector_time_full) + " " + DateTimeConversion.getFormattedDurationTextNoSeconds(it.duration / 1000, applicationContext);
+					} else if (traverseMode.equals(TraverseMode.CAR)) {
+						itinerarySummaryList[i] = getString(R.string.mode_car_action) + " " + String.format(OTPApp.FORMAT_DISTANCE_METERS_SHORT, it.walkDistance) + getResources().getString(R.string.distance_unit);
+						itinerarySummaryList[i] += " " + getString(R.string.connector_time_full) + " " + DateTimeConversion.getFormattedDurationTextNoSeconds(it.duration / 1000, applicationContext);
 					}
 				} else {
 					itinerarySummaryList[i] += getString(R.string.total_duration) + " " + DateTimeConversion.getFormattedDurationTextNoSeconds(it.duration / 1000, applicationContext);
@@ -2652,7 +2607,7 @@ public class MainFragment extends Fragment implements
 					connectionResult.startResolutionForResult(
 							getActivity(),
 							OTPApp.CONNECTION_FAILURE_RESOLUTION_REQUEST_CODE);
-		            /*
+					/*
                      * Thrown if Google Play services canceled the original
                      * PendingIntent
                      */

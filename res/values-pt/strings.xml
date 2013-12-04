@@ -69,7 +69,7 @@
     <string name="mode_transit">Transportes públicos</string>
     <string name="mode_car">Carro</string>
     <string name="mode_car_action">Conduza</string>
-    <string name="mode_bus">Apenas autocarro</string>
+    <string name="mode_bus">Ônibus</string>
     <string name="mode_train">Apenas comboio</string>
     <string name="mode_walk">A pé</string>
     <string name="mode_walk_action">Caminhe</string>

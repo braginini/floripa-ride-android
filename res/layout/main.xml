@@ -96,6 +96,18 @@
 		    android:background="@drawable/button_layout">
 		</ImageButton>
 
+		<ImageButton
+				android:id="@+id/btnHandle"
+				android:layout_width="20dp"
+				android:layout_height="48dp"
+				android:layout_alignParentLeft="true"
+				android:layout_above="@id/panelDisplayDirection"
+				android:orientation="vertical"
+				android:layout_marginTop="4dp"
+				android:layout_marginBottom="4dp"
+				android:src="@drawable/ic_navigation_drawer"
+				android:background="@drawable/handle_layout">
+		</ImageButton>
 
 		<RelativeLayout
 			android:id="@id/panelDisplayDirection"
@@ -203,74 +215,6 @@
 		 	</ListView>
 		     
 	     </LinearLayout>
-	     
-	    <ScrollView
-	        android:id="@+id/layoutBike"
-        	android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:layout_alignParentBottom="true">
-			
-			<RelativeLayout
-			    android:id="@+id/bikeParametersLayout"
-		   		android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_margin="4dp">
-			
-				<TextView
-					android:id="@+id/headerBikeParameters"
-					android:textSize="15sp"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:text="@string/header_bike_options">
-			    </TextView>
-			    
-				<LinearLayout 
-				    android:id="@+id/bikeParametersTags"
-				    android:orientation="horizontal"
-				    android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-		            android:layout_below="@id/headerBikeParameters"
-		            android:layout_gravity="center"
-		            android:padding="4dp">
-		            
-			   		<TextView
-			   		    android:id="@+id/bikeParametersQuickTag"
-						android:textSize="15sp"
-						android:textColor="@layout/color_bike_headers_red"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_weight="1"
-						android:gravity="center"
-						android:text="@string/header_bike_options_quick">
-				    </TextView>
-				    
-			   		<TextView
-			   		    android:id="@+id/bikeParametersFlatTag"
-						android:textSize="15sp"
-						android:textColor="@layout/color_bike_headers_green"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_weight="1"
-						android:gravity="center"
-						android:text="@string/header_bike_options_flat">
-				    </TextView>
-				    
-					<TextView
-			   		    android:id="@+id/bikeParametersFriendltyTag"
-						android:textSize="15sp"
-						android:textColor="@layout/color_bike_headers_blue"
-						android:layout_width="0dp"
-						android:layout_height="wrap_content"
-						android:layout_weight="1"
-						android:gravity="center"
-						android:text="@string/header_bike_options_bike_friendly">
-				    </TextView>
-			    </LinearLayout>
-			    
-			</RelativeLayout>
-			
-		</ScrollView>
 	
 	</RelativeLayout>
 			
