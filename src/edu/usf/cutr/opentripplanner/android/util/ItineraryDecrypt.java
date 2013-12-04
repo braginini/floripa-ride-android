@@ -483,6 +483,8 @@ public class ItineraryDecrypt {
 			return R.drawable.mode_walk;
 		}else if(mode.contains(TraverseMode.BICYCLE)){
 			return R.drawable.mode_bike;
+		}else if(mode.contains(TraverseMode.CAR)){
+			return R.drawable.mode_car;
 		}else {
 			return R.drawable.icon;
 		}
