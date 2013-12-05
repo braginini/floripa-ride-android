@@ -69,9 +69,9 @@
     <string name="mode_transit">Transit</string>
     <string name="mode_car">Car</string>
     <string name="mode_car_action">Drive</string>
-    <string name="mode_bus">Bus only</string>
-    <string name="mode_train">Train only</string>
-    <string name="mode_walk">Walk only</string>
+    <string name="mode_bus">Bus</string>
+    <string name="mode_train">Train</string>
+    <string name="mode_walk">Walk</string>
     <string name="mode_walk_action">Walk</string>
     <string name="mode_bicycle">Bicycle</string>
     <string name="mode_bicycle_action">Bike</string>

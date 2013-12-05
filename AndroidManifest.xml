@@ -53,6 +53,7 @@
     <application
         android:name=".OTPApp"
         android:label="@string/app_name"
+        android:icon="@drawable/floripa_ride_launcher2"
         android:allowBackup="true">
         <activity
             android:name=".MyActivity"
