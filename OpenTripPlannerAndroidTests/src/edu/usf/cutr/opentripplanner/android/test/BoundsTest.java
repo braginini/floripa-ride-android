@@ -2,8 +2,8 @@ package edu.usf.cutr.opentripplanner.android.test;
 
 import junit.framework.Assert;
 import android.test.AndroidTestCase;
-import edu.usf.cutr.opentripplanner.android.util.LocationUtil;
-import edu.usf.cutr.opentripplanner.android.model.Server;
+import com.floriparide.android.util.LocationUtil;
+import com.floriparide.android.model.Server;
 
 import com.google.android.gms.maps.model.LatLng;
 

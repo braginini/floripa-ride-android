@@ -15,7 +15,7 @@
   limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.usf.cutr.opentripplanner.android"
+    package="com.floriparide.android"
     android:versionCode="9"
     android:versionName="2.0.2" >
     <uses-sdk android:minSdkVersion="8" 
@@ -67,7 +67,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SettingsActivity" 
+        <activity android:name="com.floriparide.android.SettingsActivity"
         	android:theme="@style/MyTheme"
         	android:windowSoftInputMode="stateHidden" >
         </activity>
