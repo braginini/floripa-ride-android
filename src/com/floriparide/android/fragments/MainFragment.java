@@ -500,7 +500,7 @@ public class MainFragment extends Fragment implements
 		mMap.setOnCameraChangeListener(this);
 		uiSettings.setMyLocationButtonEnabled(false);
 		uiSettings.setCompassEnabled(true);
-		;
+
 		uiSettings.setAllGesturesEnabled(true);
 		uiSettings.setZoomControlsEnabled(false);
 
@@ -1891,10 +1891,15 @@ public class MainFragment extends Fragment implements
 				startActivity(myIntent);
 				break;
 			case R.id.clear:
-				tbStartLocation.setText("");
-				tbEndLocation.setText("");
+				restartMap();
+				restartTextBoxes();
 
-				//todo refresh map
+				Server selectedServer = app.getSelectedServer();
+				if (selectedServer != null) {
+					if (!mapFailed) {
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(getLastLocation(), getServerInitialZoom(selectedServer)));
+					}
+				}
 				break;
 
 			case R.id.feedback:
@@ -1908,15 +1913,6 @@ public class MainFragment extends Fragment implements
 				Date d = Calendar.getInstance().getTime();
 				subject += "[" + d.toString() + "]";
 				uriText += "?subject=" + subject;
-
-				String content = ((MyActivity) getActivity()).getCurrentRequestString();
-
-				/*try {
-					uriText += "&body=" + URLEncoder.encode(content, OTPApp.URL_ENCODING);
-				} catch (UnsupportedEncodingException e1) {
-					e1.printStackTrace();
-					return false;
-				}*/
 
 				Uri uri = Uri.parse(uriText);
 
