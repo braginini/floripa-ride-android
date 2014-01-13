@@ -85,6 +85,7 @@
     <string name="no_gps_signal">Kein GPS Signal verfügbar</string>
     <string name="my_location">Momentaner Aufenthaltsort</string>
     <string name="settings">Einstellungen</string>
+    <string name="www">www</string>
     <string name="feedback">Kontakt</string>
     <string name="feedback_send_email">Email senden</string>
     <string name="feedback_subject">Nachricht an Entwickler</string>

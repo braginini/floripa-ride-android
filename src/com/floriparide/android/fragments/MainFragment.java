@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 University of South Florida
+ * Copyright 2013 Mikhail Bragin
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1920,6 +1920,10 @@ public class MainFragment extends Fragment implements
 				sendIntent.setData(uri);
 				startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.feedback_send_email)));
 
+				break;
+			case R.id.www:
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.website)));
+				startActivity(browserIntent);
 				break;
 			default:
 				break;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 University of South Florida
+ * Copyright 2013 Mikhail Bragin
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,16 +41,6 @@ import com.floriparide.android.fragments.MainFragment;
 import com.floriparide.android.listeners.DateCompleteListener;
 import com.floriparide.android.listeners.OnFragmentListener;
 import com.floriparide.android.model.OTPBundle;
-
-/**
- * Main Activity for the OTP for Android app
- * 
- * @author Marcy Gordon
- * @author Khoa Tran
- * @author Sean Barbeau (conversion to Jackson)
- * @author Vreixo Gonz�lez (update to Google Maps API v2, UI and general app improvements)
- * 
- */
 
 public class MyActivity extends FragmentActivity implements OnFragmentListener{
 

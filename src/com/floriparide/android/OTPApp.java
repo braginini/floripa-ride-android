@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Marcy Gordon
+ * Copyright 2013 Mikhail Bragin
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -108,7 +108,7 @@ public class OTPApp extends Application {
 
     public static final String BUNDLE_KEY_SETTINGS_INTENT = "timepicker minutes";
 
-	public static final String SERVER_BASE_URL = "http://ec2-54-207-21-176.sa-east-1.compute.amazonaws.com:8080/opentripplanner-api-webapp/ws";
+	public static final String SERVER_BASE_URL = "http://floriparide.com.br:8080/opentripplanner-api-webapp/ws";
     
     public static final int COLOR_ROUTE_LINE = 0x7F0000FF;
 

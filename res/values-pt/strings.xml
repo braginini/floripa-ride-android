@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2011 Marcy Gordon
+ Copyright 2013 Mikhail Bragin
  
  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  use this file except in compliance with the License. You may obtain a copy of
@@ -85,6 +85,7 @@
     <string name="no_gps_signal">Lamentamos, não há sinal GPS</string>
     <string name="my_location">A minha localização</string>
     <string name="settings">Opções</string>
+	<string name="www">www</string>
     <string name="feedback">Enviar comentário</string>
     <string name="feedback_send_email">Enviar e-mail</string>
     <string name="feedback_subject">Informar o autor da aplicação</string>

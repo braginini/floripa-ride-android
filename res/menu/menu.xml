@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- Copyright 2011 Marcy Gordon
+ Copyright 2013 Mikhail Bragin
  
  Licensed under the Apache License, Version 2.0 (the "License"); you may not
  use this file except in compliance with the License. You may obtain a copy of
@@ -19,5 +19,6 @@
     <item android:id="@+id/gps_settings" android:title="@string/enable_gps" android:icon="@android:drawable/ic_menu_compass"></item>
     <item android:id="@+id/clear" android:title="@string/clear" android:icon="@android:drawable/ic_menu_info_details"></item>
     <item android:id="@+id/feedback" android:title="@string/feedback" android:icon="@android:drawable/ic_menu_send"></item>
+    <item android:id="@+id/www" android:title="@string/www" android:icon="@android:drawable/ic_menu_manage"></item>
     <!--<item android:id="@+id/settings" android:title="@string/settings" android:icon="@android:drawable/ic_menu_manage"></item>-->
 </menu>
