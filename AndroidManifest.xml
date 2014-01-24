@@ -16,8 +16,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.floriparide.android"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="2"
+    android:versionName="1.1" >
     <uses-sdk android:minSdkVersion="8" 
               android:targetSdkVersion="13"/>
     
@@ -33,8 +33,6 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-	<!-- The following permission is not required to use
-    	 Google Maps Android API v2, but is recommended. -->
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
 	<uses-feature
@@ -72,7 +70,44 @@
         <service android:name=".NavigationService" />
 	    <meta-data
 		    android:name="com.google.android.maps.v2.API_KEY"
-		    android:value="AIzaSyAyKpynS2QIoUw42ykl04TXStSmUPfixx4"/>
+		    android:value="@string/google_maps_api"/>
+
+	    <!-- YANDEX METRICA START -->
+	    <!-- Optional field. Can be set programmatically. -->
+	    <meta-data android:name="metrica:api:key" android:value="@string/ya_metrica_api" />
+
+	    <service android:name="com.yandex.metrica.MetricaService" android:process=":Metrica" >
+		    <intent-filter>
+			    <category android:name="android.intent.category.DEFAULT" />
+			    <action android:name="com.yandex.metrica.IMetricaService" />
+			    <data android:scheme="metrica" />
+		    </intent-filter>
+		    <meta-data android:name="metrica:api:level" android:value="@string/ya_metrica_api_level" />
+	    </service>
+
+	    <receiver android:name="com.yandex.metrica.MetricaEventHandler" >
+		    <intent-filter>
+			    <action android:name="com.yandex.metrica.intent.action.SYNC" />
+		    </intent-filter>
+		    <intent-filter>
+			    <action android:name="android.intent.action.PACKAGE_ADDED" />
+			    <action android:name="android.intent.action.PACKAGE_DATA_CLEARED" />
+			    <data android:scheme="package" />
+		    </intent-filter>
+	    </receiver>
+
+	    <receiver android:name="com.yandex.metrica.CampaignReceiver" android:exported="true" >
+		    <intent-filter>
+			    <action android:name="com.android.vending.INSTALL_REFERRER" />
+		    </intent-filter>
+	    </receiver>
+
+	    <provider
+			    android:name="com.floriparide.android.provider.MetricaContentProvider"
+			    android:authorities="com.floriparide.android.MetricaContentProvider"
+			    android:exported="true" />
+
+	    <!-- YANDEX METRICA END -->
     </application>
 
 

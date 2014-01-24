@@ -18,6 +18,7 @@ package com.floriparide.android;
 
 import android.app.Application;
 import com.floriparide.android.model.Server;
+import com.yandex.metrica.Counter;
 
 /*
  * Modified by Khoa Tran
@@ -169,6 +170,12 @@ public class OTPApp extends Application {
 	 */
 	public Server getSelectedServer() {
 		return selectedServer;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Counter.initialize(getApplicationContext());
 	}
 	
 }

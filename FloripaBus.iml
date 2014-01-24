@@ -20,6 +20,7 @@
     <orderEntry type="library" name="jackson-databind-2.3.0" level="project" />
     <orderEntry type="library" name="opencsv-2.3" level="project" />
     <orderEntry type="library" name="opentripplanner-pojos-1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="protobuf-java-2.4.1" level="project" />
   </component>
 </module>
 

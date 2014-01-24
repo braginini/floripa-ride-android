@@ -41,6 +41,7 @@ import com.floriparide.android.fragments.MainFragment;
 import com.floriparide.android.listeners.DateCompleteListener;
 import com.floriparide.android.listeners.OnFragmentListener;
 import com.floriparide.android.model.OTPBundle;
+import com.yandex.metrica.Counter;
 
 public class MyActivity extends FragmentActivity implements OnFragmentListener{
 
@@ -238,4 +239,17 @@ public class MyActivity extends FragmentActivity implements OnFragmentListener{
 		dateCompleteCallback.onDateComplete(tripDate, scheduleType);
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		/** Always need to call */
+		Counter.sharedInstance().onResumeActivity(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		/** Always need to call */
+		Counter.sharedInstance().onPauseActivity(this);
+	}
 }

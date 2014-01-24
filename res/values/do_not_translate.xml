@@ -43,4 +43,7 @@
     <string name="geocoder_google_places">Google Places</string>
     <string name="custom_server_url_hint">http://x.x.x/otp-api-webapp/ws</string>    
     <string name="website">http://floriparide.com.br/</string>
+	<string name="ya_metrica_api">18043</string>
+	<string name="ya_metrica_api_level">1</string>
+	<string name="google_maps_api">AIzaSyAyKpynS2QIoUw42ykl04TXStSmUPfixx4</string>
 </resources>

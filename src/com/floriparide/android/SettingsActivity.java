@@ -44,6 +44,7 @@ import com.floriparide.android.model.Server;
 import com.floriparide.android.sqlite.ServersDataSource;
 import com.floriparide.android.tasks.ServerChecker;
 import com.floriparide.android.util.DateTimeConversion;
+import com.yandex.metrica.Counter;
 
 /*
  * Modified by Khoa Tran
@@ -383,6 +384,20 @@ public class SettingsActivity extends PreferenceActivity implements ServerChecke
 		if (returnIntent != null){
 			outState.putParcelable(OTPApp.BUNDLE_KEY_SETTINGS_INTENT, returnIntent);
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		/** Always need to call */
+		Counter.sharedInstance().onResumeActivity(this);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		/** Always need to call */
+		Counter.sharedInstance().onPauseActivity(this);
 	}
 	
 	
