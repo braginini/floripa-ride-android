@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.yandex.metrica.Counter;
 import org.miscwidgets.widget.Panel;
 import org.opentripplanner.api.ws.GraphMetadata;
 import org.opentripplanner.api.ws.Request;
@@ -1374,6 +1377,20 @@ public class MainFragment extends Fragment implements
 		request.setShowIntermediateStops(Boolean.TRUE);
 
 		WeakReference<Activity> weakContext = new WeakReference<Activity>(MainFragment.this.getActivity());
+
+        EasyTracker easyTracker = EasyTracker.getInstance(this.getActivity());
+
+        // MapBuilder.createEvent().build() returns a Map of event fields and values
+        // that are set and sent with the hit.
+        easyTracker.send(MapBuilder
+                .createEvent("ui_action",     // Event category (required)
+                        "button_press",  // Event action (required)
+                        "trip_request",   // Event label
+                        null)            // Event value
+                .build()
+        );
+
+        Counter.sharedInstance().reportEvent("trip_request");
 
 		new TripRequest(weakContext, MainFragment.this.applicationContext, app
 				.getSelectedServer(), MainFragment.this)

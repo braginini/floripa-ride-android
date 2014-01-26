@@ -44,6 +44,7 @@ import com.floriparide.android.model.Server;
 import com.floriparide.android.sqlite.ServersDataSource;
 import com.floriparide.android.tasks.ServerChecker;
 import com.floriparide.android.util.DateTimeConversion;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.yandex.metrica.Counter;
 
 /*
@@ -56,7 +57,20 @@ public class SettingsActivity extends PreferenceActivity implements ServerChecke
 	private Preference providerFeedbackButton;
 	private Preference serverRefreshButton;
 	private CheckBoxPreference selectedCustomServer;
-	private ListPreference geocoderProvider;
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    private ListPreference geocoderProvider;
 	private EditTextPreference maxWalkingDistance;
 	
 	private final String TAG = "OTP";

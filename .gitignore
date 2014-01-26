@@ -4,3 +4,5 @@
 /res/raw/
 /.idea/
 /out/
+/proguard_logs/
+/OpenTripPlannerAndroidTests
