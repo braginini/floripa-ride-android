@@ -1,12 +1,3 @@
-OpenTripPlanner-for-Android
-===========================
+zipalign 4 FloripaBus.apk FloripaRide.apk
 
-An Android app for multi-modal trip planning and navigation using any OpenTripPlanner server.
-
-See more details here:
-
-https://github.com/CUTR-at-USF/OpenTripPlanner-for-Android/wiki
-
-Developer Guide is here:
-
-https://github.com/CUTR-at-USF/OpenTripPlanner-for-Android/wiki/Developer-Guide
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore C:\floriparide.keystore FloripaBus.apk floriparide

@@ -30,9 +30,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.floriparide.android.stats.EventReporter;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.yandex.metrica.Counter;
+
 import org.miscwidgets.widget.Panel;
 import org.opentripplanner.api.ws.GraphMetadata;
 import org.opentripplanner.api.ws.Request;
@@ -167,7 +169,8 @@ public class MainFragment extends Fragment implements
 		DateCompleteListener, OnRangeSeekBarChangeListener<Double>,
 		GooglePlayServicesClient.OnConnectionFailedListener,
 		GooglePlayServicesClient.ConnectionCallbacks,
-		GoogleMap.OnCameraChangeListener {
+		GoogleMap.OnCameraChangeListener,
+		EventReporter {
 
 	//private View mainView;
 
@@ -806,6 +809,9 @@ public class MainFragment extends Fragment implements
 		OnClickListener oclDisplayDirection = new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_TRIP_INFO, null, getActivity());
+
 				saveOTPBundle();
 				getFragmentListener().onSwitchedToDirectionFragment();
 			}
@@ -818,6 +824,9 @@ public class MainFragment extends Fragment implements
 		OnClickListener oclMyLocation = new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_MY_LOCATION, null, getActivity());
+
 				LatLng mCurrentLatLng = getLastLocation();
 
 				if (mCurrentLatLng == null) {
@@ -836,6 +845,9 @@ public class MainFragment extends Fragment implements
 		OnClickListener oclDateDialog = new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_DATE_DIALOG, null, getActivity());
+
 				FragmentTransaction ft = MainFragment.this.getActivity().getSupportFragmentManager().beginTransaction();
 				Fragment prev = MainFragment.this.getActivity().getSupportFragmentManager().findFragmentByTag(OTPApp.TAG_FRAGMENT_DATE_TIME_DIALOG);
 				if (prev != null) {
@@ -914,7 +926,12 @@ public class MainFragment extends Fragment implements
 				}
 
 				btnPlanTrip.setImageBitmap(BitmapFactory.decodeResource(getResources(), ItineraryDecrypt.getModeIcon(traverseModeSpinnerItem.getTraverseModeSet())));
+
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_ITINERARY_MODE, (long) position, getActivity());
 			}
+
+
 		});
 
 		ddlOptimization.setOnItemClickListener(new OnItemClickListener() {
@@ -982,6 +999,9 @@ public class MainFragment extends Fragment implements
 		OnMapClickListener omcl = new OnMapClickListener() {
 			@Override
 			public void onMapClick(LatLng latlng) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_MAP,
+						OTPApp.EVENT_MAP_CLICK, null, getActivity());
+
 				InputMethodManager imm = (InputMethodManager) MainFragment.this.getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(tbEndLocation.getWindowToken(), 0);
@@ -1004,6 +1024,9 @@ public class MainFragment extends Fragment implements
 
 			@Override
 			public void onMarkerDragEnd(Marker marker) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_MAP,
+						OTPApp.EVENT_MARKER_DRAG_END, null, getActivity());
+
 				LatLng markerLatlng = marker.getPosition();
 
 				if (((app.getSelectedServer() != null) && LocationUtil.checkPointInBoundingBox(markerLatlng, app.getSelectedServer(), OTPApp.CHECK_BOUNDS_ACCEPTABLE_ERROR))
@@ -1036,6 +1059,9 @@ public class MainFragment extends Fragment implements
 
 			@Override
 			public void onMarkerDragStart(Marker marker) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_MAP,
+						OTPApp.EVENT_MARKER_DRAG_START, null, getActivity());
+
 				InputMethodManager imm = (InputMethodManager) MainFragment.this.getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(tbEndLocation.getWindowToken(), 0);
@@ -1047,6 +1073,9 @@ public class MainFragment extends Fragment implements
 		OnMapLongClickListener omlcl = new OnMapLongClickListener() {
 			@Override
 			public void onMapLongClick(LatLng latlng) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_MAP,
+						OTPApp.EVENT_MAP_LONG_CLICK, null, getActivity());
+
 				InputMethodManager imm = (InputMethodManager) MainFragment.this.getActivity()
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(tbEndLocation.getWindowToken(), 0);
@@ -1076,6 +1105,9 @@ public class MainFragment extends Fragment implements
 
 			@Override
 			public void onClick(View v) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_BUTTON_HANDLE, null, getActivity());
+
 				drawerLayout.openDrawer(Gravity.LEFT);
 			}
 		};
@@ -1248,6 +1280,10 @@ public class MainFragment extends Fragment implements
 	}
 
 	private void requestTrip() {
+
+		sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+				OTPApp.EVENT_TRIP_REQUEST, null, this.getActivity());
+
 		LatLng mCurrentLatLng = getLastLocation();
 		String startLocationString = null;
 		String endLocationString = null;
@@ -1377,20 +1413,6 @@ public class MainFragment extends Fragment implements
 		request.setShowIntermediateStops(Boolean.TRUE);
 
 		WeakReference<Activity> weakContext = new WeakReference<Activity>(MainFragment.this.getActivity());
-
-        EasyTracker easyTracker = EasyTracker.getInstance(this.getActivity());
-
-        // MapBuilder.createEvent().build() returns a Map of event fields and values
-        // that are set and sent with the hit.
-        easyTracker.send(MapBuilder
-                .createEvent("ui_action",     // Event category (required)
-                        "button_press",  // Event action (required)
-                        "trip_request",   // Event label
-                        null)            // Event value
-                .build()
-        );
-
-        Counter.sharedInstance().reportEvent("trip_request");
 
 		new TripRequest(weakContext, MainFragment.this.applicationContext, app
 				.getSelectedServer(), MainFragment.this)
@@ -1903,11 +1925,17 @@ public class MainFragment extends Fragment implements
 		OTPApp app = ((OTPApp) getActivity().getApplication());
 		switch (pItem.getItemId()) {
 			case R.id.gps_settings:
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_SETTINGS_GPS, null, this.getActivity());
+
 				Intent myIntent = new Intent(
 						Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 				startActivity(myIntent);
 				break;
 			case R.id.clear:
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_SETTINGS_CLEAR, null, this.getActivity());
+
 				restartMap();
 				restartTextBoxes();
 
@@ -1920,6 +1948,8 @@ public class MainFragment extends Fragment implements
 				break;
 
 			case R.id.feedback:
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_SETTINGS_FEEDBACK, null, this.getActivity());
 
 				String uriText = "mailto:";
 
@@ -1939,6 +1969,9 @@ public class MainFragment extends Fragment implements
 
 				break;
 			case R.id.www:
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_BUTTON_PRESS,
+						OTPApp.EVENT_SETTINGS_WWW, null, this.getActivity());
+
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.website)));
 				startActivity(browserIntent);
 				break;
@@ -2625,7 +2658,7 @@ public class MainFragment extends Fragment implements
 							getActivity(),
 							OTPApp.CONNECTION_FAILURE_RESOLUTION_REQUEST_CODE);
 					/*
-                     * Thrown if Google Play services canceled the original
+	                 * Thrown if Google Play services canceled the original
                      * PendingIntent
                      */
 				} catch (IntentSender.SendIntentException e) {
@@ -2772,5 +2805,19 @@ public class MainFragment extends Fragment implements
 		bikeTriangleMaxValue = maxValue;
 		String bikeParam = minValue.toString() + maxValue.toString();
 		Log.v(TAG, bikeParam);
+	}
+
+	@Override
+	public void sendEvent(String category, String action, String event, Long value, Context context) {
+		EasyTracker easyTracker = EasyTracker.getInstance(context);
+
+		// MapBuilder.createEvent().build() returns a Map of event fields and values
+		// that are set and sent with the hit.
+		easyTracker.send(MapBuilder
+				.createEvent(category, action, event, value)
+				.build()
+		);
+
+		Counter.sharedInstance().reportEvent(category + "/" + action + "/" + event);
 	}
 }

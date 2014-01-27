@@ -152,6 +152,29 @@ public class OTPApp extends Application {
 	public static final String FORMAT_OTP_SERVER_DATE_QUERY = "MM/dd/yy";
 	public static final String FORMAT_OTP_SERVER_TIME_QUERY = "kk:mm";
 
+	//analytics stuff
+	//categories
+	public static final String EVENT_CATEGORY_UI_ACTION = "ui_action";
+	//actions
+	public static final String EVENT_ACTION_BUTTON_PRESS = "button_press";
+	public static final String EVENT_ACTION_MAP = "map";
+	//events
+	public static final String EVENT_TRIP_REQUEST = "trip_request";
+	public static final String EVENT_TRIP_INFO = "trip_info";
+	public static final String EVENT_MY_LOCATION = "my_location";
+	public static final String EVENT_DATE_DIALOG = "date_dialog";
+	public static final String EVENT_ITINERARY_MODE = "itinerary_mode";
+	public static final String EVENT_SETTINGS_GPS = "settings_gps";
+	public static final String EVENT_SETTINGS_CLEAR = "settings_clear";
+	public static final String EVENT_SETTINGS_FEEDBACK = "settings_feedback";
+	public static final String EVENT_SETTINGS_WWW = "settings_www";
+	public static final String EVENT_BUTTON_HANDLE = "button_handle";
+	public static final String EVENT_MAP_CLICK = "map_click";
+	public static final String EVENT_MAP_LONG_CLICK = "map_long_click";
+	public static final String EVENT_MARKER_DRAG_END = "marker_drag_end";
+	public static final String EVENT_MARKER_DRAG_START = "marker_drag_start";
+
+
 
 	/**
 	 * Sets the currently selected OTP server
