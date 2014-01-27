@@ -198,7 +198,7 @@ public class OTPApp extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Counter.initialize(getApplicationContext());
+		Counter.initialize(this);
 	}
 	
 }
