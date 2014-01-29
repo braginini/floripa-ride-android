@@ -549,7 +549,7 @@ public class MainFragment extends Fragment implements
 			public boolean onDrawableTouch(final MotionEvent event) {
 
 				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
-						OTPApp.EVENT_TEXT_FIELD_TAP, null, getActivity());
+						OTPApp.EVENT_TEXT_FIELD_START_TAP, null, getActivity());
 
 				// mBoundService.updateNotification();
 
@@ -618,6 +618,9 @@ public class MainFragment extends Fragment implements
 			@Override
 			public boolean onDrawableTouch(final MotionEvent event) {
 				// mBoundService.updateNotification();
+
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
+						OTPApp.EVENT_TEXT_FIELD_END_TAP, null, getActivity());
 
 				final CharSequence[] items = {getResources().getString(R.string.location_type_current_location),
 						getResources().getString(R.string.location_type_contact), getResources().getString(R.string.location_type_map_point)};
@@ -703,10 +706,18 @@ public class MainFragment extends Fragment implements
 						if (v.getId() == R.id.tbStartLocation
 								&& !isStartLocationGeocodingProcessed
 								&& !prefs.getBoolean(OTPApp.PREFERENCE_KEY_ORIGIN_IS_MY_LOCATION, true)) {
+
+							sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
+									OTPApp.EVENT_TEXT_FIELD_START_FOCUS, null, getActivity());
+
 							processAddress(true, tv.getText().toString(), false);
 						} else if (v.getId() == R.id.tbEndLocation
 								&& !isEndLocationGeocodingProcessed
 								&& !prefs.getBoolean(OTPApp.PREFERENCE_KEY_DESTINATION_IS_MY_LOCATION, true)) {
+
+							sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
+									OTPApp.EVENT_TEXT_FIELD_END_FOCUS, null, getActivity());
+
 							processAddress(false, tv.getText().toString(), false);
 						}
 					} else {
@@ -735,6 +746,9 @@ public class MainFragment extends Fragment implements
 
 			@Override
 			public void afterTextChanged(Editable s) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
+						OTPApp.EVENT_TEXT_FIELD_START_TEXT_CHANGED, null, getActivity());
+
 				if (isStartLocationChangedByUser) {
 					SharedPreferences.Editor prefsEditor = prefs.edit();
 					prefsEditor.putBoolean(OTPApp.PREFERENCE_KEY_ORIGIN_IS_MY_LOCATION, false);
@@ -760,6 +774,9 @@ public class MainFragment extends Fragment implements
 
 			@Override
 			public void afterTextChanged(Editable s) {
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
+						OTPApp.EVENT_TEXT_FIELD_END_TEXT_CHANGED, null, getActivity());
+
 				if (isEndLocationChangedByUser) {
 					SharedPreferences.Editor prefsEditor = prefs.edit();
 					prefsEditor.putBoolean(OTPApp.PREFERENCE_KEY_DESTINATION_IS_MY_LOCATION, false);

@@ -174,7 +174,12 @@ public class OTPApp extends Application {
 	public static final String EVENT_MAP_LONG_CLICK = "map_long_click";
 	public static final String EVENT_MARKER_DRAG_END = "marker_drag_end";
 	public static final String EVENT_MARKER_DRAG_START = "marker_drag_start";
-	public static final String EVENT_TEXT_FIELD_TAP = "text_field_tap";
+	public static final String EVENT_TEXT_FIELD_START_TAP = "text_field_start_tap";
+	public static final String EVENT_TEXT_FIELD_END_TAP = "text_field_end_tap";
+	public static final String EVENT_TEXT_FIELD_START_FOCUS = "text_field_start_focus";
+	public static final String EVENT_TEXT_FIELD_END_FOCUS = "text_field_end_focus";
+	public static final String EVENT_TEXT_FIELD_START_TEXT_CHANGED = "text_field_start_text_changed";
+	public static final String EVENT_TEXT_FIELD_END_TEXT_CHANGED = "text_field_end_text_changed";
 
 
 
