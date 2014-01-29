@@ -436,8 +436,6 @@ public class MainFragment extends Fragment implements
 			bikeTriangleParameters.setSelectedMaxValue(OTPApp.BIKE_PARAMETERS_FLAT_DEFAULT_VALUE);
 		}
 
-		updateServerMetadata();
-
 		if (!mapFailed) {
 			String baseURL = prefs.getString(OTPApp.PREFERENCE_KEY_SERVER_URL, OTPApp.SERVER_BASE_URL);
 			Server s = new Server(baseURL, applicationContext);
@@ -549,6 +547,10 @@ public class MainFragment extends Fragment implements
 		OnTouchListener otlStart = new RightDrawableOnTouchListener(tbStartLocation) {
 			@Override
 			public boolean onDrawableTouch(final MotionEvent event) {
+
+				sendEvent(OTPApp.EVENT_CATEGORY_UI_ACTION, OTPApp.EVENT_ACTION_TEXT_FIELD,
+						OTPApp.EVENT_TEXT_FIELD_TAP, null, getActivity());
+
 				// mBoundService.updateNotification();
 
 				final CharSequence[] items = {getResources().getString(R.string.location_type_current_location),
@@ -2685,6 +2687,9 @@ public class MainFragment extends Fragment implements
 		Location mCurrentLocation = mLocationClient.getLastLocation();
 
 		if ((!mapFailed)) {
+
+			updateServerMetadata();
+
 			if (mCurrentLocation != null) {
 				//mLocationClient.requestLocationUpdates(mLocationRequest, this);
 				double savedLatitude = 0;
